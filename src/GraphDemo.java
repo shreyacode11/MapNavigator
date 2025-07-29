@@ -3,7 +3,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.*;
-import java.util.Scanner;
 
 /**
  * Demonstrates the calculation of shortest paths in the US Highway
@@ -15,8 +14,8 @@ public class GraphDemo {
     public static void main(String[] args) throws Exception {
         
         GraphProcessor demoGraph = new GraphProcessor();
-        FileInputStream file = new FileInputStream("mapNavigator/data/usa.graph");
-        FileInputStream citiesFile = new FileInputStream("mapNavigator/data/uscities.csv");
+        FileInputStream file = new FileInputStream("data/karnataka.graph");
+        FileInputStream citiesFile = new FileInputStream("data/karnataka_cities.csv");
         demoGraph.initialize(file);
 
         Scanner reader = new Scanner(System.in);
@@ -49,11 +48,12 @@ public class GraphDemo {
 
         long beforeDist = System.nanoTime();
         double distance = demoGraph.routeDistance(route);
+        double distanceKm = distance * 1.60934; // convert miles to km
         double afterDist = System.nanoTime();
         double timeDist = (afterDist - beforeDist) / 1e6;
 
-        String visFile = "mapNavigator/data/usa.vis"; 
-        String background = "mapNavigator/images/usa.png";
+        String visFile = "data/karnataka.vis"; 
+        String background = "images/karnataka.png";
         Visualize test = new Visualize(visFile, background);
         test.drawRoute(route);
 
@@ -64,7 +64,7 @@ public class GraphDemo {
         + ") is " + nearCityB.toString() + ".");
 
         System.out.println("The route distance between " + nearCityA.toString() + 
-        " and " + nearCityB.toString() + " is " + distance + "miles");
+    " and " + nearCityB.toString() + " is " + String.format("%.2f", distanceKm) + " km");
 
         double totalTime = timeClosestPoints + timePath + timeDist;
         System.out.println("Total Time = " + totalTime + "ms");

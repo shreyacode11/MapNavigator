@@ -20,36 +20,68 @@ public class GraphProcessor {
      * @throws Exception if file not found or error reading
      */
 
-    private void helperInitialize (FileInputStream file) throws FileNotFoundException {
-        Scanner reader = new Scanner(file);
-        String [] info = reader.nextLine().split(" ");
-        int vertices = Integer.parseInt(info[0]);
-        int edges = Integer.parseInt(info[1]);
-        Point[] points = new Point[vertices];
-        for (int i = 0; i < vertices; i++) {
-            String [] coords = reader.nextLine().split(" ");
-            String name = coords[0];
-            double lat = Double.parseDouble(coords[1]);
-            double lon = Double.parseDouble(coords[2]);
-            points[i] = new Point(lat, lon);
+   private void helperInitialize(FileInputStream file) throws FileNotFoundException {
+    Scanner reader = new Scanner(file);
+    
+    // Read header
+    String headerLine = reader.nextLine().trim();
+    while (headerLine.isEmpty()) headerLine = reader.nextLine().trim(); // skip blank lines
+    String[] info = headerLine.split("\\s+");
+    
+    int vertices = Integer.parseInt(info[0]);
+    int edges = Integer.parseInt(info[1]);
+    
+    Point[] points = new Point[vertices];
+    
+    // Read vertices
+    for (int i = 0; i < vertices; ) {
+        if (!reader.hasNextLine()) break;
+        String line = reader.nextLine().trim();
+        if (line.isEmpty()) continue;
+
+        String[] coords = line.split("\\s+");
+        if (coords.length < 3) {
+            System.out.println("⚠️ Skipping malformed location line: " + line);
+            continue;
         }
 
-        myMap = new HashMap<>();
-        for (int i = 0; i < edges; i++) {
-            String [] connections = reader.nextLine().split(" ");
-            int aIndex = Integer.parseInt(connections[0]);
-            int bIndex = Integer.parseInt(connections[1]);
-            Point a = points[aIndex];
-            Point b = points[bIndex];
-            myMap.putIfAbsent(a, new HashSet<Point>());
-            myMap.get(a).add(b);
-            myMap.putIfAbsent(b, new HashSet<Point>());
-            myMap.get(b).add(a);
+        String name = coords[0];
+        double lat = Double.parseDouble(coords[1]);
+        double lon = Double.parseDouble(coords[2]);
+        points[i] = new Point(lat, lon);
+        i++; // increment only if successful
+    }
+
+    myMap = new HashMap<>();
+
+    // Read edges
+    for (int i = 0; i < edges; ) {
+        if (!reader.hasNextLine()) break;
+        String line = reader.nextLine().trim();
+        if (line.isEmpty()) continue;
+
+        String[] connections = line.split("\\s+");
+        if (connections.length < 2) {
+            System.out.println("⚠️ Skipping malformed edge line: " + line);
+            continue;
         }
 
-        reader.close();
+        int aIndex = Integer.parseInt(connections[0]);
+        int bIndex = Integer.parseInt(connections[1]);
 
-        }
+        Point a = points[aIndex];
+        Point b = points[bIndex];
+
+        myMap.putIfAbsent(a, new HashSet<>());
+        myMap.get(a).add(b);
+        myMap.putIfAbsent(b, new HashSet<>());
+        myMap.get(b).add(a);
+        i++; // increment only if successful
+    }
+
+    reader.close();
+}
+
         
     public void initialize(FileInputStream file) throws Exception {
         helperInitialize(file); 
