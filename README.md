@@ -1,8 +1,8 @@
 # 🗺️ Map Navigator
 
-<p align="center">
+<!-- <p align="center">
   <img src="assets/logo.png" alt="Map Navigator Logo" width="180"/>
-</p>
+</p> -->
 
 <p align="center">
   <img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge">
@@ -106,13 +106,11 @@ MapNavigator/
 
 ## Console Output
 
-![](assets/output.png)
+![](assets/output.jpg)
 
 ---
 
-## Graph Representation
 
-![](assets/graph.png)
 
 ---
 
